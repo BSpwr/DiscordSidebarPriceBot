@@ -1,0 +1,5 @@
+version: "3.3"
+services:
+  discord_sidebar_price_bot:
+    build: .
+    restart: always

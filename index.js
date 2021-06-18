@@ -31,7 +31,8 @@ const bot = new Discord.Client();
 let UPDATE_INTERVAL;  // Price update interval in milliseconds
 let TICKER;           // Which ticker to pull price for
 let TOKEN_INDEX;      // Discord bot token index to use (in auth.json)
-let ROTATE_PRICE;     // If unpopulated, keep price as $, otherwise rotate between $, Ξ and ₿ every 10 seconds
+let ROTATE_PRICE;     // If unpopulated, keep price as $, otherwise rotate between $, ⟠ and ₿ with specified time interval
+const ROTATE_PRICE_INTERVAL_MS = 5000
 
 let priceData;
 let guildMeCache = [];
@@ -62,7 +63,7 @@ bot.on('ready', () => {
     UPDATE_INTERVAL = 60000;
   }
 
-  // Rotate price between $, Ξ and ₿ every 10 seconds if populated
+  // Rotate price between $, ⟠ and ₿ every 10 seconds if populated
   if (typeof process.argv[5] !== 'undefined') {
     ROTATE_PRICE = true;
   }
@@ -74,7 +75,7 @@ bot.on('ready', () => {
   setInterval(getPrice, UPDATE_INTERVAL);
 
   if (ROTATE_PRICE) {
-    setInterval(showPrice, 10000);
+    setInterval(showPrice, ROTATE_PRICE_INTERVAL_MS);
   }
 });
 
@@ -141,10 +142,10 @@ function showPrice() {
     case '$':
       priceKey = priceData.ticker;
       if (ROTATE_PRICE) {
-        priceData.showPriceType = 'Ξ';
+        priceData.showPriceType = '⟠';
       }
       break;
-    case 'Ξ':
+    case '⟠':
       priceKey = priceData.ticker + 'ETH';
       priceData.showPriceType = '₿';
       break;
@@ -156,7 +157,7 @@ function showPrice() {
       break
   }
 
-  if (!(priceData.ticker === 'ETH' && showPriceType === 'Ξ') && !(priceData.ticker === 'BTC' && showPriceType === '₿')) {
+  if (!(priceData.ticker === 'ETH' && showPriceType === '⟠') && !(priceData.ticker === 'BTC' && showPriceType === '₿')) {
     guildMeCache.forEach(guildMe => guildMe.setNickname(`${priceData.ticker} ${showPriceType}${priceData[priceKey].currPrice} ${priceData[priceKey].changeArrow}`));
     bot.user.setActivity(`${showPriceType} 24h: ${priceData[priceKey].change24H}%`);
     //console.log(`${priceData.ticker} $${priceData[priceKey].currPrice} ${priceData[priceKey].change24H}%`);
