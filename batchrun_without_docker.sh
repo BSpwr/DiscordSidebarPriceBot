@@ -12,5 +12,5 @@ node index.js VEIL 15000 8 1 &
 node index.js XMR 15000 9 1 &
 node index.js ⛽ 15000 10 &
 node index.js BNB 15000 11 1 &
-node index.js UNI 15000 12 1 &
+node index.js UNISWAP 15000 12 1 &
 node index.js XLM 15000 13 1 &
